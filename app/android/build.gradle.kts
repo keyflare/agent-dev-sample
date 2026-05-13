@@ -80,6 +80,7 @@ val releaseSigningEnvNames = listOf(
 )
 val releaseRequiredEnvNames = releaseSigningEnvNames + listOf(
     "EXCHANGE_APPMETRICA_API_KEY",
+    "COMICVINE_API_KEY",
 )
 
 val missingReleaseSigningEnvNames = releaseSigningEnvNames.filter { name ->
