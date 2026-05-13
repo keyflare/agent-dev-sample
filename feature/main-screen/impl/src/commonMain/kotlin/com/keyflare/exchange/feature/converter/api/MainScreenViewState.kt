@@ -4,5 +4,14 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 public data class MainScreenViewState(
-    val stub: String,
+    val query: String,
+    val suggestions: List<HeroSearchSuggestionViewState>,
+    val isSearching: Boolean,
+    val searchError: String?,
+)
+
+@Immutable
+public data class HeroSearchSuggestionViewState(
+    val id: Int,
+    val name: String,
 )
