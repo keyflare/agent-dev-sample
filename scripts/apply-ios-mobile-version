@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+die() {
+  echo "apply-ios-mobile-version: $*" >&2
+  exit 1
+}
+
+[[ -n "${SRCROOT:-}" ]] || die "SRCROOT is not set"
+[[ -n "${TARGET_BUILD_DIR:-}" ]] || die "TARGET_BUILD_DIR is not set"
+[[ -n "${INFOPLIST_PATH:-}" ]] || die "INFOPLIST_PATH is not set"
+
+REPO_ROOT="$(cd "$SRCROOT/../.." && pwd)"
+MOBILE_VERSION_SCRIPT="${MOBILE_VERSION_SCRIPT:-$REPO_ROOT/scripts/mobile-version}"
+INFO_PLIST="$TARGET_BUILD_DIR/$INFOPLIST_PATH"
+
+[[ -x "$MOBILE_VERSION_SCRIPT" ]] || die "mobile-version script is not executable: $MOBILE_VERSION_SCRIPT"
+[[ -f "$INFO_PLIST" ]] || die "built Info.plist does not exist: $INFO_PLIST"
+
+if [[ "${CONFIGURATION:-}" == "Release" ]]; then
+  MODE="--release"
+else
+  MODE="--debug"
+fi
+
+cd "$REPO_ROOT"
+
+VERSION_NAME="$("$MOBILE_VERSION_SCRIPT" version-name "$MODE")"
+BUILD_NUMBER="$("$MOBILE_VERSION_SCRIPT" build-number "$MODE")"
+
+/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION_NAME" "$INFO_PLIST"
+/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "$INFO_PLIST"
+
+if [[ -n "${SCRIPT_OUTPUT_FILE_0:-}" ]]; then
+  mkdir -p "$(dirname "$SCRIPT_OUTPUT_FILE_0")"
+  touch "$SCRIPT_OUTPUT_FILE_0"
+fi
+
+echo "Applied iOS mobile version $VERSION_NAME ($BUILD_NUMBER) to $INFO_PLIST"

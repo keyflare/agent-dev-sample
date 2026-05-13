@@ -1,0 +1,92 @@
+<resources>
+    <string name="app_name">Ratebench</string>
+
+    <!--  Common  -->
+    <string name="network_status_no_internet_title">No internet connection</string>
+    <string name="network_status_no_internet_message">Check your connection and try again. The latest known exchange rates are being used.</string>
+    <string name="network_status_server_unavailable_title">Server unavailable</string>
+    <string name="network_status_server_unavailable_message">We are working on it. The latest known exchange rates are being used.</string>
+
+    <!--  Main Screen  -->
+    <string name="main_screen_title_converter">Converter</string>
+    <string name="main_screen_description_converter">Convert fiat and crypto assets.</string>
+    <string name="main_screen_chip_converter_fiat">All fiat</string>
+    <string name="main_screen_chip_converter_crypto">18000+ crypto</string>
+    <string name="main_screen_title_exchange">Complex Exchange</string>
+    <string name="main_screen_description_exchange">Chain multiple swaps and compare the final effective rate in one view.</string>
+    <string name="main_screen_chip_exchange_multi_step">Multi-step</string>
+    <string name="main_screen_title_widgets">Widgets</string>
+    <string name="main_screen_description_widgets">Home-screen widgets for rates, and quick insights.</string>
+    <string name="main_screen_chip_widgets_coming_soon">Coming soon</string>
+    <string name="main_screen_header_latest_exchanges">Latest exchanges</string>
+    <string name="main_screen_button_history">History</string>
+    <string name="main_screen_history_placeholder">Your records will be here</string>
+    <string name="main_screen_title_rates_settings">Select currencies to follow rates</string>
+    <string name="main_screen_title_base_currency">Base currency</string>
+    <string name="main_screen_bar_edit_title">Select currencies to follow rates</string>
+    <string name="main_screen_bar_edit_currency_pair">Edit the currency pair</string>
+    <string name="main_screen_bar_tap_cell_to_edit">Tap a cell to edit ↑</string>
+    <string name="main_screen_bar_select">select</string>
+    <string name="main_screen_bar_add">add</string>
+    <string name="main_screen_bar_rate_to">to</string>
+
+    <!--  Converter Screen  -->
+    <string name="converter_screen_title">Converter</string>
+    <string name="converter_screen_rate_placeholder">Getting rates...</string>
+    <string name="converter_screen_rate_offline">offline</string>
+    <string name="converter_screen_result_placeholder">Getting rates...</string>
+
+    <!--  Currency Chooser Screen  -->
+    <string name="currency_chooser_title">Select currency</string>
+    <string name="currency_chooser_search_placeholder">Search currency</string>
+    <string name="currency_chooser_recents_title">Recents</string>
+    <string name="currency_chooser_crypto_empty_placeholder">No crypto assets found</string>
+
+    <!--  Complex Exchange Screen  -->
+    <string name="complex_exchange_title">Complex Exchange</string>
+    <string name="complex_exchange_add_step">Add step</string>
+    <string name="complex_exchange_whats_next">What's next</string>
+    <string name="complex_exchange_add_next_step_here">Add the next step here</string>
+    <string name="complex_exchange_cancel">Cancel</string>
+    <string name="complex_exchange_apply">Apply</string>
+    <string name="complex_exchange_sent">Sent</string>
+    <string name="complex_exchange_received">Received</string>
+    <string name="complex_exchange_rate">Rate</string>
+    <string name="complex_exchange_fee">Fee</string>
+    <string name="complex_exchange_fee_additional">(optional)</string>
+    <string name="complex_exchange_fee_error_min_greater_than_max">MIN must be less than or equal to MAX.</string>
+    <string name="complex_exchange_fee_error_percent_too_high">Percent fee cannot be greater than 100%.</string>
+    <string name="complex_exchange_set_fee">Set fee</string>
+    <string name="complex_exchange_has_minimum_value">Has min/max values</string>
+    <string name="complex_exchange_what_i_can_fill">What I can fill</string>
+    <string name="complex_exchange_note">Note</string>
+    <string name="complex_exchange_save_to_history">Save to history</string>
+    <string name="complex_exchange_saved_to_history">Saved to history</string>
+    <string name="complex_exchange_rate_effective">Effective rate</string>
+    <string name="complex_exchange_rate_market">Market rate</string>
+    <string name="complex_exchange_delta">Delta</string>
+    <string name="complex_exchange_step">Step</string>
+    <string name="complex_exchange_delete_step">Delete step</string>
+    <string name="complex_exchange_from">From</string>
+    <string name="complex_exchange_to">To</string>
+    <string name="complex_exchange_percent">Percent</string>
+    <string name="complex_exchange_amount">Amount</string>
+    <string name="complex_exchange_minimum">MIN (optional):</string>
+    <string name="complex_exchange_maximum">MAX (optional):</string>
+    <string name="complex_exchange_fixed">Fixed</string>
+    <string name="complex_exchange_apply_hint_choose_from_and_to">Choose From and To currencies</string>
+    <string name="complex_exchange_apply_hint_choose_from">Choose From currency</string>
+    <string name="complex_exchange_apply_hint_choose_to">Choose To currency</string>
+    <string name="complex_exchange_apply_hint_same_currencies">From and To currencies must be different</string>
+    <string name="complex_exchange_apply_hint_choose_what_to_fill">Choose what you can fill</string>
+    <string name="complex_exchange_apply_hint_choose_one_more_field">Choose one more value to fill</string>
+    <string name="complex_exchange_history_rates_unavailable_title">Rates were unavailable</string>
+    <string name="complex_exchange_history_rates_unavailable_message">When this chain was saved to history, market rates were unavailable, so some values may appear as placeholders.</string>
+
+    <!--  Exchange History Screen  -->
+    <string name="history_screen_title">Exchange history</string>
+    <string name="history_screen_search_placeholder">Search</string>
+    <string name="history_screen_no_results_placeholder">No records were found</string>
+    <string name="history_screen_cancel">Cancel</string>
+
+</resources>

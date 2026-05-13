@@ -1,0 +1,195 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+TAG_PATTERN='mobile/v[0-9]*.[0-9]*.[0-9]*'
+VERSION_COMPONENT='(0|[1-9][0-9]*)'
+TAG_REGEX="^mobile/v${VERSION_COMPONENT}\\.${VERSION_COMPONENT}\\.${VERSION_COMPONENT}$"
+
+usage() {
+  cat >&2 <<'EOF'
+Usage:
+  scripts/mobile-version version-name --debug
+  scripts/mobile-version version-name --release
+  scripts/mobile-version build-number --debug
+  scripts/mobile-version build-number --release
+  scripts/mobile-version xcode-settings --debug
+  scripts/mobile-version xcode-settings --release
+EOF
+}
+
+die() {
+  echo "mobile-version: $*" >&2
+  exit 1
+}
+
+git_root() {
+  git rev-parse --show-toplevel 2>/dev/null || die "must run inside a git repository"
+}
+
+exact_release_tag() {
+  local tag
+
+  tag="$(git describe --exact-match --match "$TAG_PATTERN" HEAD 2>/dev/null || true)"
+  [[ -n "$tag" ]] || die "release builds must be run from an exact mobile/vX.Y.Z tag"
+  [[ "$tag" =~ $TAG_REGEX ]] || die "invalid mobile release tag: $tag"
+
+  local object_type
+  object_type="$(git cat-file -t "$tag")"
+  [[ "$object_type" == "tag" ]] || die "release tag $tag must be annotated"
+
+  echo "$tag"
+}
+
+version_name_for_tag() {
+  local tag="$1"
+
+  [[ "$tag" =~ $TAG_REGEX ]] || die "invalid mobile release tag: $tag"
+  echo "${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${BASH_REMATCH[3]}"
+}
+
+latest_version_name() {
+  local tag
+
+  while read -r candidate_tag object_type; do
+    [[ "$object_type" == "tag" ]] || continue
+    [[ "$candidate_tag" =~ $TAG_REGEX ]] || continue
+
+    tag="$candidate_tag"
+    break
+  done < <(
+    git for-each-ref \
+      --sort=-taggerdate \
+      --format='%(refname:short) %(objecttype)' \
+      'refs/tags/mobile/v*.*.*'
+  )
+
+  if [[ -z "${tag:-}" ]]; then
+    echo "0.0.0"
+    return
+  fi
+
+  version_name_for_tag "$tag"
+}
+
+release_build_number_for_tag() {
+  local current_tag="$1"
+  local count=0
+  local current_version
+  local current_key
+
+  current_version="$(version_name_for_tag "$current_tag")"
+  current_key="$(version_key "$current_version")"
+
+  git remote get-url origin >/dev/null 2>&1 ||
+    die "cannot compute release build number: origin remote is not configured"
+
+  while read -r version; do
+    [[ -n "$version" ]] || continue
+
+    local key
+    key="$(version_key "$version")"
+    if [[ "$key" < "$current_key" || "$key" == "$current_key" ]]; then
+      count="$((count + 1))"
+    fi
+  done < <(remote_annotated_release_versions)
+
+  if ! remote_has_annotated_release_tag "$current_tag"; then
+    count="$((count + 1))"
+  fi
+
+  echo "$count"
+}
+
+version_key() {
+  local version="$1"
+
+  [[ "$version" =~ ^${VERSION_COMPONENT}\.${VERSION_COMPONENT}\.${VERSION_COMPONENT}$ ]] ||
+    die "invalid semantic version: $version"
+  printf '%010d%010d%010d\n' "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}" "${BASH_REMATCH[3]}"
+}
+
+remote_mobile_tag_refs() {
+  git ls-remote --tags origin 'refs/tags/mobile/v*.*.*' 2>/dev/null ||
+    die "cannot compute release build number: git ls-remote origin failed"
+}
+
+remote_ref_has_peeled_ref() {
+  local refs="$1"
+  local ref="$2"
+
+  printf '%s\n' "$refs" |
+    awk -v peeled_ref="$ref^{}" '$2 == peeled_ref { found = 1 } END { exit found ? 0 : 1 }'
+}
+
+remote_annotated_release_versions() {
+  local refs
+  refs="$(remote_mobile_tag_refs)"
+
+  while read -r object ref; do
+    [[ -n "${object:-}" && -n "${ref:-}" ]] || continue
+    [[ "$ref" != *'^{}' ]] || continue
+
+    local tag
+    tag="${ref#refs/tags/}"
+    [[ "$tag" =~ $TAG_REGEX ]] || continue
+    remote_ref_has_peeled_ref "$refs" "$ref" || continue
+
+    version_name_for_tag "$tag"
+  done <<< "$refs"
+}
+
+remote_has_annotated_release_tag() {
+  local tag="$1"
+  local refs
+  local ref="refs/tags/$tag"
+
+  refs="$(remote_mobile_tag_refs)"
+  printf '%s\n' "$refs" | awk -v exact_ref="$ref" '$2 == exact_ref { found = 1 } END { exit found ? 0 : 1 }' ||
+    return 1
+  remote_ref_has_peeled_ref "$refs" "$ref"
+}
+
+command="${1:-}"
+mode="${2:-}"
+
+if [[ -z "$command" || -z "$mode" ]]; then
+  usage
+  exit 2
+fi
+
+case "$mode" in
+  --debug) release=false ;;
+  --release) release=true ;;
+  *)
+    usage
+    exit 2
+    ;;
+esac
+
+cd "$(git_root)"
+
+if [[ "$release" == true ]]; then
+  tag="$(exact_release_tag)"
+  version_name="$(version_name_for_tag "$tag")"
+  build_number="$(release_build_number_for_tag "$tag")"
+else
+  version_name="$(latest_version_name)"
+  build_number="1"
+fi
+
+case "$command" in
+  version-name)
+    echo "$version_name"
+    ;;
+  build-number)
+    echo "$build_number"
+    ;;
+  xcode-settings)
+    echo "MARKETING_VERSION=$version_name"
+    echo "CURRENT_PROJECT_VERSION=$build_number"
+    ;;
+  *)
+    usage
+    exit 2
+    ;;
+esac

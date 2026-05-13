@@ -1,0 +1,33 @@
+{
+  "originHash" : "7b3f496bc2a110710829e0afb27e3ccc61f7fe68a295553aebbdf2736ed12e6d",
+  "pins" : [
+    {
+      "identity" : "appmetrica-sdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/appmetrica/appmetrica-sdk-ios",
+      "state" : {
+        "revision" : "8d55b06f3fa81434a91a85b8561f4531462b1f80",
+        "version" : "6.2.0"
+      }
+    },
+    {
+      "identity" : "kscrash",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kstenerud/KSCrash",
+      "state" : {
+        "revision" : "95a8895d75f3c22aa9ad9f2a15d2fbd97b0a55e2",
+        "version" : "2.5.1"
+      }
+    },
+    {
+      "identity" : "lottie-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/airbnb/lottie-spm.git",
+      "state" : {
+        "revision" : "69faaefa7721fba9e434a52c16adf4329c9084db",
+        "version" : "4.6.0"
+      }
+    }
+  ],
+  "version" : 3
+}
