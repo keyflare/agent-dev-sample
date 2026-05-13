@@ -1,0 +1,4 @@
+interface:
+  display_name: "Exchange SVG Icon"
+  short_description: "Add SVG icons to Exchange KMP"
+  default_prompt: "Use $exchange-svg-icon to add this SVG as a new app icon."
