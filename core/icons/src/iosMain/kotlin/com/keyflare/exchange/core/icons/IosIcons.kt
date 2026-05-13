@@ -22,6 +22,7 @@ fun getIcon(icon: AppIcon) : IconName {
         AppIcon.PLUS -> IconName.System("plus")
         AppIcon.RECEIPT_LONG -> IconName.System("list.bullet.rectangle.portrait")
         AppIcon.SWAP -> IconName.System("arrow.up.arrow.down")
+        AppIcon.THUMB_UP -> IconName.System("hand.thumbsup")
         AppIcon.TRASH -> IconName.System("trash")
     }
 }

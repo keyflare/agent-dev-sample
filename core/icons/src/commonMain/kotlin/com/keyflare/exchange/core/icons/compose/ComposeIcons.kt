@@ -21,6 +21,7 @@ import com.keyflare.exchange.core.icons.compose.list.Plus
 import com.keyflare.exchange.core.icons.compose.list.ReceiptLong
 import com.keyflare.exchange.core.icons.compose.list.Settings
 import com.keyflare.exchange.core.icons.compose.list.Swap
+import com.keyflare.exchange.core.icons.compose.list.ThumbUp
 import com.keyflare.exchange.core.icons.compose.list.Trash
 import com.keyflare.exchange.core.icons.compose.list.Widgets
 
@@ -50,6 +51,7 @@ val AppIcon.Compose.AllIcons: List<ImageVector>
             ReceiptLong,
             Settings,
             Swap,
+            ThumbUp,
             Trash,
             Widgets,
         )
