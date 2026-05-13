@@ -8,7 +8,9 @@ import com.keyflare.exchange.feature.converter.internal.MainScreenPureView
 public fun MainScreenView(viewModel: MainScreenViewModel) {
     MainScreenPureView(
         viewModel.viewState.collectAsState(),
-        onUiEvent = viewModel::onUiEvent,
+        onQueryChange = { viewModel.onUiEvent(MainScreenUiEvent.OnSearchQueryChanged(it)) },
+        onSearchClick = { viewModel.onUiEvent(MainScreenUiEvent.OnSearchClick) },
+        onSuggestionClick = { viewModel.onUiEvent(MainScreenUiEvent.OnSuggestionClick(it)) },
         onSettingsClick = { viewModel.onUiEvent(MainScreenUiEvent.OnSettingsClick) },
         onDebugPanelClick = { viewModel.onUiEvent(MainScreenUiEvent.OnDebugPanelClick) },
     )
