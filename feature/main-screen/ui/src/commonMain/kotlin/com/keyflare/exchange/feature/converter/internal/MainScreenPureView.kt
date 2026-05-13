@@ -11,13 +11,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -25,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.keyflare.exchange.core.ds.common.CustomTheme
 import com.keyflare.exchange.core.ds.component.DsTextField
@@ -95,6 +101,8 @@ internal fun MainScreenPureView(
                 value = state.value.query,
                 onValueChange = onQueryChange,
                 placeholder = "Search hero",
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = { onSearchClick() }),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
@@ -102,11 +110,21 @@ internal fun MainScreenPureView(
             Button(
                 onClick = onSearchClick,
                 enabled = state.value.query.isNotBlank(),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = CustomTheme.colors.surfaceAction,
+                    contentColor = CustomTheme.colors.iconsSecondary,
+                    disabledBackgroundColor = CustomTheme.colors.surfaceSecondaryVariant,
+                    disabledContentColor = CustomTheme.colors.textAdditional,
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
-                Text("Search")
+                Text(
+                    text = "Search",
+                    style = CustomTheme.type.body1,
+                )
             }
             state.value.suggestions.forEach { suggestion ->
                 Text(
@@ -115,6 +133,7 @@ internal fun MainScreenPureView(
                     color = CustomTheme.colors.textPrimary,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .heightIn(min = 48.dp)
                         .clickable { onSuggestionClick(suggestion.id) }
                         .padding(horizontal = 16.dp, vertical = 12.dp)
                 )
