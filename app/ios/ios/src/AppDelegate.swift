@@ -17,11 +17,14 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
     override init() {
         let analyticsAgent = Self.createAnalyticsAgent()
+        let comicVineApiKey =
+            Bundle.main.object(forInfoDictionaryKey: "ComicVineApiKey") as? String ?? ""
 
         exchangeApp = ExchangeApp(
             platformDependencies: ExchangePlatformDependencies(
                 dataStorePlatform: Data_storeDataStorePlatform(),
                 buildType: Self.appBuildType,
+                comicVineApiKey: comicVineApiKey,
                 analyticsAgent: analyticsAgent,
                 platformServices: PlatformServices(
                     shareHelper: ShareHelperIos(),

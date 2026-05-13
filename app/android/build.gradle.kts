@@ -146,6 +146,11 @@ android {
                 "APPMETRICA_API_KEY",
                 "\"${System.getenv("EXCHANGE_APPMETRICA_API_KEY_DEV").orEmpty()}\"",
             )
+            buildConfigField(
+                "String",
+                "COMICVINE_API_KEY",
+                "\"${System.getenv("COMICVINE_API_KEY").orEmpty()}\"",
+            )
             manifestPlaceholders.putAll(
                 mapOf(
                     "ALLOW_HTTP" to true,
@@ -165,6 +170,11 @@ android {
                 "String",
                 "APPMETRICA_API_KEY",
                 "\"${System.getenv("EXCHANGE_APPMETRICA_API_KEY").orEmpty()}\"",
+            )
+            buildConfigField(
+                "String",
+                "COMICVINE_API_KEY",
+                "\"${System.getenv("COMICVINE_API_KEY").orEmpty()}\"",
             )
             manifestPlaceholders.putAll(
                 mapOf(
@@ -190,6 +200,11 @@ android {
                 "String",
                 "APPMETRICA_API_KEY",
                 "\"${System.getenv("EXCHANGE_APPMETRICA_API_KEY_DEV").orEmpty()}\"",
+            )
+            buildConfigField(
+                "String",
+                "COMICVINE_API_KEY",
+                "\"${System.getenv("COMICVINE_API_KEY").orEmpty()}\"",
             )
             manifestPlaceholders.putAll(
                 mapOf(

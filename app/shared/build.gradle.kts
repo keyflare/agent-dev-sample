@@ -25,6 +25,7 @@ deps {
         api(projects.core.utilityScreen)
         api(projects.core.analytics)
         api(projects.core.platform)
+        api(projects.core.comicvine)
 
         ////////// Features ///////////////////////////////////
         api(projects.feature.mainScreen.impl)
@@ -46,6 +47,7 @@ setup {
             projects.core.utilityScreen,
             projects.core.analytics,
             projects.core.platform,
+            projects.core.comicvine,
             // Features
             projects.feature.mainScreen.impl,
             projects.feature.debugPanel.impl,

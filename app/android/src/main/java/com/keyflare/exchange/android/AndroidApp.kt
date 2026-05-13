@@ -35,6 +35,7 @@ class AndroidApp : Application() {
             platformDependencies = ExchangePlatformDependencies(
                 dataStorePlatform = DataStorePlatform(context = this),
                 buildType = buildType,
+                comicVineApiKey = BuildConfig.COMICVINE_API_KEY,
                 analyticsAgent = analyticsAgent,
                 platformServices = PlatformServices(
                     shareHelper = ShareHelperAndroid(activityProvider = activityProvider),

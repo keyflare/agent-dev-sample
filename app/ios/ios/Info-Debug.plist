@@ -4,6 +4,8 @@
 <dict>
 	<key>AppMetricaApiKey</key>
 	<string>$(APPMETRICA_API_KEY)</string>
+	<key>ComicVineApiKey</key>
+	<string>$(COMICVINE_API_KEY)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

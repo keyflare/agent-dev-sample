@@ -15,6 +15,7 @@ deps {
         implementation(projects.core.analytics)
         implementation(projects.core.navigationTools)
         implementation(projects.core.strings)
+        api(projects.core.comicvine)
 
         api(projects.feature.mainScreen.api)
     }

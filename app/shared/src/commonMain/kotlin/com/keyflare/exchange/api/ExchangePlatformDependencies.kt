@@ -9,6 +9,7 @@ import com.keyflare.exchange.core.platform.PlatformServices
 public data class ExchangePlatformDependencies(
     val dataStorePlatform: DataStorePlatform,
     val buildType: AppBuildType,
+    val comicVineApiKey: String = "",
     val analyticsAgent: AnalyticsAgent = NoOpAnalyticsAgent,
     val platformServices: PlatformServices = PlatformServices(),
     val openNetworkLogs: (() -> Unit)? = null,
@@ -16,10 +17,12 @@ public data class ExchangePlatformDependencies(
     public constructor(
         dataStorePlatform: DataStorePlatform,
         buildType: AppBuildType,
+        comicVineApiKey: String = "",
         openNetworkLogs: (() -> Unit)? = null,
     ) : this(
         dataStorePlatform = dataStorePlatform,
         buildType = buildType,
+        comicVineApiKey = comicVineApiKey,
         analyticsAgent = NoOpAnalyticsAgent,
         platformServices = PlatformServices(),
         openNetworkLogs = openNetworkLogs,
