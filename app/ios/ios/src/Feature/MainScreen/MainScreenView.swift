@@ -28,6 +28,9 @@ struct MainScreenView: View {
     }
 
     var body: some View {
+        let isSearchEnabled = !state.value.query.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        ).isEmpty
 
         ZStack {
             theme.color.background
@@ -116,15 +119,21 @@ struct MainScreenView: View {
                     ) {
                         Text("Search")
                             .font(theme.type.body1)
-                            .foregroundColor(theme.color.textAction)
+                            .foregroundColor(
+                                isSearchEnabled
+                                    ? theme.color.iconsSecondary
+                                    : theme.color.textAdditional
+                            )
                             .frame(maxWidth: .infinity)
                             .frame(height: 44)
+                            .background(
+                                isSearchEnabled
+                                    ? theme.color.surfaceAction
+                                    : theme.color.surfaceSecondary
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
-                    .disabled(
-                        state.value.query.trimmingCharacters(
-                            in: .whitespacesAndNewlines
-                        ).isEmpty
-                    )
+                    .disabled(!isSearchEnabled)
                     .padding(.horizontal, 16)
 
                     Spacer()
