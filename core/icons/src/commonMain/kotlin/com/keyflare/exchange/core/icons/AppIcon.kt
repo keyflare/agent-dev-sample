@@ -18,6 +18,7 @@ enum class AppIcon {
     ALERT,
     NETWORK_ALERT,
     TRASH,
+    THUMB_UP,
     PLUS,
     MINUS,
     DIVIDE,
