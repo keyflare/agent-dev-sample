@@ -15,6 +15,7 @@ struct MainScreenView: View {
 
     private let viewModel: MainScreenViewModel
     @StateObject private var state: FlowWrapperObserver<MainScreenViewState>
+    @State private var query: String = ""
 
     init(viewModel: MainScreenViewModel) {
         self.viewModel = viewModel
@@ -86,6 +87,86 @@ struct MainScreenView: View {
 
                     Spacer()
                         .frame(height: 12)
+
+                    TextField("Search hero", text: $query)
+                        .font(theme.type.body1)
+                        .foregroundColor(theme.color.textPrimaryVariant)
+                        .padding(.horizontal, 12)
+                        .frame(height: 48)
+                        .background(theme.color.surfaceSecondary)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .padding(.horizontal, 16)
+                        .onChange(of: query) { _, newValue in
+                            viewModel.onUiEvent(
+                                event: MainScreenUiEventOnSearchQueryChanged(
+                                    query: newValue
+                                )
+                            )
+                        }
+
+                    Spacer()
+                        .frame(height: 8)
+
+                    Button(
+                        action: {
+                            viewModel.onUiEvent(
+                                event: MainScreenUiEventOnSearchClick()
+                            )
+                        }
+                    ) {
+                        Text("Search")
+                            .font(theme.type.body1)
+                            .foregroundColor(theme.color.textAction)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 44)
+                    }
+                    .disabled(
+                        state.value.query.trimmingCharacters(
+                            in: .whitespacesAndNewlines
+                        ).isEmpty
+                    )
+                    .padding(.horizontal, 16)
+
+                    Spacer()
+                        .frame(height: 8)
+
+                    if state.value.isSearching {
+                        Text("Searching...")
+                            .font(theme.type.body2)
+                            .foregroundColor(theme.color.textAdditional)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 16)
+                    }
+
+                    if let error = state.value.searchError {
+                        Text(error)
+                            .font(theme.type.body2)
+                            .foregroundColor(theme.color.textAlert)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 16)
+                    }
+
+                    ForEach(state.value.suggestions, id: \.id) { suggestion in
+                        Button(
+                            action: {
+                                viewModel.onUiEvent(
+                                    event: MainScreenUiEventOnSuggestionClick(
+                                        id: suggestion.id
+                                    )
+                                )
+                            }
+                        ) {
+                            Text(suggestion.name)
+                                .font(theme.type.body1)
+                                .foregroundColor(theme.color.textPrimary)
+                                .frame(
+                                    maxWidth: .infinity,
+                                    alignment: .leading
+                                )
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                        }
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .top)
                 .padding(.bottom, 16)
@@ -93,6 +174,16 @@ struct MainScreenView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onAppear {
+            if query != state.value.query {
+                query = state.value.query
+            }
+        }
+        .onChange(of: state.value.query) { _, newValue in
+            if query != newValue {
+                query = newValue
+            }
+        }
     }
 }
 
