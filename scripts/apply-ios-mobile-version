@@ -6,6 +6,45 @@ die() {
   exit 1
 }
 
+first_non_empty_line() {
+  awk 'NF { value = $0 } END { if (value != "") print value }'
+}
+
+resolve_comic_vine_api_key() {
+  if [[ -n "${COMICVINE_API_KEY:-}" && "${COMICVINE_API_KEY:-}" != '$('* ]]; then
+    printf '%s' "$COMICVINE_API_KEY"
+    return 0
+  fi
+
+  local launchctl_value=""
+  if command -v launchctl >/dev/null 2>&1; then
+    launchctl_value="$(launchctl getenv COMICVINE_API_KEY 2>/dev/null || true)"
+    if [[ -n "$launchctl_value" && "$launchctl_value" != '$('* ]]; then
+      printf '%s' "$launchctl_value"
+      return 0
+    fi
+  fi
+
+  local user_shell="${SHELL:-/bin/zsh}"
+  if [[ -x "$user_shell" ]]; then
+    local shell_value=""
+
+    shell_value="$(env -u COMICVINE_API_KEY "$user_shell" -lc 'printenv COMICVINE_API_KEY' 2>/dev/null | first_non_empty_line || true)"
+    if [[ -n "$shell_value" && "$shell_value" != '$('* ]]; then
+      printf '%s' "$shell_value"
+      return 0
+    fi
+
+    shell_value="$(env -u COMICVINE_API_KEY "$user_shell" -ic 'printenv COMICVINE_API_KEY' 2>/dev/null | first_non_empty_line || true)"
+    if [[ -n "$shell_value" && "$shell_value" != '$('* ]]; then
+      printf '%s' "$shell_value"
+      return 0
+    fi
+  fi
+
+  return 1
+}
+
 [[ -n "${SRCROOT:-}" ]] || die "SRCROOT is not set"
 [[ -n "${TARGET_BUILD_DIR:-}" ]] || die "TARGET_BUILD_DIR is not set"
 [[ -n "${INFOPLIST_PATH:-}" ]] || die "INFOPLIST_PATH is not set"
@@ -30,6 +69,13 @@ BUILD_NUMBER="$("$MOBILE_VERSION_SCRIPT" build-number "$MODE")"
 
 /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION_NAME" "$INFO_PLIST"
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "$INFO_PLIST"
+
+if COMIC_VINE_API_KEY="$(resolve_comic_vine_api_key)"; then
+  /usr/libexec/PlistBuddy "$INFO_PLIST" >/dev/null <<PLISTBUDDY
+Set :ComicVineApiKey $COMIC_VINE_API_KEY
+Save
+PLISTBUDDY
+fi
 
 if [[ -n "${SCRIPT_OUTPUT_FILE_0:-}" ]]; then
   mkdir -p "$(dirname "$SCRIPT_OUTPUT_FILE_0")"
