@@ -52,6 +52,8 @@ cat > build/ios.app/Info.plist <<'PLIST'
     <string>0.0.0</string>
     <key>CFBundleVersion</key>
     <string>1</string>
+    <key>ComicVineApiKey</key>
+    <string>$(COMICVINE_API_KEY)</string>
 </dict>
 </plist>
 PLIST
@@ -60,14 +62,52 @@ SRCROOT="$TMP_DIR/repo/app/ios" \
 TARGET_BUILD_DIR="$TMP_DIR/repo/build" \
 INFOPLIST_PATH="ios.app/Info.plist" \
 CONFIGURATION="Release" \
+COMICVINE_API_KEY="ios-test-key" \
 MOBILE_VERSION_SCRIPT="$MOBILE_VERSION" \
 "$APPLY_VERSION" >/dev/null
 
 short_version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$TMP_DIR/repo/build/ios.app/Info.plist")"
 build_version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$TMP_DIR/repo/build/ios.app/Info.plist")"
+comic_vine_api_key="$(/usr/libexec/PlistBuddy -c 'Print :ComicVineApiKey' "$TMP_DIR/repo/build/ios.app/Info.plist")"
 
 assert_eq "2.3.4" "$short_version" "release iOS short version comes from mobile tag"
 assert_eq "1" "$build_version" "release iOS build number comes from mobile tag order"
+assert_eq "ios-test-key" "$comic_vine_api_key" "iOS Comic Vine API key comes from COMICVINE_API_KEY env"
+
+mkdir -p "$TMP_DIR/bin"
+cat > "$TMP_DIR/bin/launchctl" <<'SH'
+#!/usr/bin/env bash
+exit 0
+SH
+chmod +x "$TMP_DIR/bin/launchctl"
+
+cat > "$TMP_DIR/bin/fake-shell" <<'SH'
+#!/usr/bin/env bash
+if [[ -z "${COMICVINE_API_KEY+x}" ]]; then
+  export COMICVINE_API_KEY="ios-shell-key"
+fi
+
+if [[ "${2:-}" == "printenv COMICVINE_API_KEY" ]]; then
+  printenv COMICVINE_API_KEY
+fi
+SH
+chmod +x "$TMP_DIR/bin/fake-shell"
+
+/usr/libexec/PlistBuddy -c 'Set :ComicVineApiKey $(COMICVINE_API_KEY)' "$TMP_DIR/repo/build/ios.app/Info.plist"
+
+SRCROOT="$TMP_DIR/repo/app/ios" \
+TARGET_BUILD_DIR="$TMP_DIR/repo/build" \
+INFOPLIST_PATH="ios.app/Info.plist" \
+CONFIGURATION="Release" \
+COMICVINE_API_KEY='$(COMICVINE_API_KEY)' \
+PATH="$TMP_DIR/bin:/usr/bin:/bin:/usr/sbin:/sbin" \
+SHELL="$TMP_DIR/bin/fake-shell" \
+MOBILE_VERSION_SCRIPT="$MOBILE_VERSION" \
+"$APPLY_VERSION" >/dev/null
+
+comic_vine_api_key="$(/usr/libexec/PlistBuddy -c 'Print :ComicVineApiKey' "$TMP_DIR/repo/build/ios.app/Info.plist")"
+
+assert_eq "ios-shell-key" "$comic_vine_api_key" "iOS Comic Vine API key falls back to the user shell when Xcode provides a placeholder"
 
 stamp_file="$TMP_DIR/repo/build/apply-ios-mobile-version.stamp"
 rm -f "$stamp_file"
