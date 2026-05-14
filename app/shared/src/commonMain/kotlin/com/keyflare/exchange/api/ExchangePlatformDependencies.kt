@@ -12,10 +12,24 @@ public data class ExchangePlatformDependencies(
     val analyticsAgent: AnalyticsAgent = NoOpAnalyticsAgent,
     val platformServices: PlatformServices = PlatformServices(),
     val openNetworkLogs: (() -> Unit)? = null,
+    val comicVineApiKey: String = "",
 ) {
     public constructor(
         dataStorePlatform: DataStorePlatform,
         buildType: AppBuildType,
+        openNetworkLogs: (() -> Unit)?,
+    ) : this(
+        dataStorePlatform = dataStorePlatform,
+        buildType = buildType,
+        analyticsAgent = NoOpAnalyticsAgent,
+        platformServices = PlatformServices(),
+        openNetworkLogs = openNetworkLogs,
+    )
+
+    public constructor(
+        dataStorePlatform: DataStorePlatform,
+        buildType: AppBuildType,
+        comicVineApiKey: String,
         openNetworkLogs: (() -> Unit)? = null,
     ) : this(
         dataStorePlatform = dataStorePlatform,
@@ -23,5 +37,6 @@ public data class ExchangePlatformDependencies(
         analyticsAgent = NoOpAnalyticsAgent,
         platformServices = PlatformServices(),
         openNetworkLogs = openNetworkLogs,
+        comicVineApiKey = comicVineApiKey,
     )
 }

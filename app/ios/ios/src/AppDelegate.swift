@@ -17,6 +17,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
     override init() {
         let analyticsAgent = Self.createAnalyticsAgent()
+        let comicVineApiKey = Self.comicVineApiKey
 
         exchangeApp = ExchangeApp(
             platformDependencies: ExchangePlatformDependencies(
@@ -30,7 +31,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                     urlOpener: UrlOpenerIos(),
                     emailHelper: EmailHelperIos()
                 ),
-                openNetworkLogs: nil
+                openNetworkLogs: nil,
+                comicVineApiKey: comicVineApiKey
             )
         )
         rootComponent = exchangeApp.onPlatformCreate(
@@ -85,6 +87,18 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
         AppMetrica.activate(with: configuration)
         return IosAppMetricaAnalyticsAgent()
+    }
+
+    private static var comicVineApiKey: String {
+        guard
+            let apiKey = Bundle.main.object(forInfoDictionaryKey: "ComicVineApiKey") as? String,
+            !apiKey.isEmpty,
+            !apiKey.hasPrefix("$(")
+        else {
+            return ""
+        }
+
+        return apiKey
     }
 
     private static var appBuildType: UtilsAppBuildType {
