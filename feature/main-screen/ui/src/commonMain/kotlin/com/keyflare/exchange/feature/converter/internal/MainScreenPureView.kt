@@ -4,6 +4,7 @@ package com.keyflare.exchange.feature.converter.internal
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -30,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.keyflare.exchange.core.ds.common.CustomTheme
@@ -65,11 +67,13 @@ internal fun MainScreenPureView(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp)
+                    .padding(vertical = 16.dp)
             ) {
                 Text(
                     text = "/agent_dev ",
                     style = CustomTheme.type.heading1Mono,
+                    color = CustomTheme.colors.textPrimary,
                     modifier = Modifier.weight(1f)
                 )
                 IconButton(
