@@ -2,6 +2,7 @@ package com.keyflare.exchange.feature.converter.api
 
 import com.keyflare.common.utils.AppBuildType
 import com.keyflare.exchange.core.comicvine.ComicVineCharacterSearchResult
+import com.keyflare.exchange.core.comicvine.ComicVineException
 import com.keyflare.exchange.core.comicvine.ComicVineCharactersRepository
 import com.keyflare.exchange.feature.converter.MainScreenArgs
 import kotlinx.coroutines.CompletableDeferred
@@ -184,6 +185,29 @@ class MainScreenViewModelTest {
         assertEquals(emptyList(), viewModel.viewState.value.suggestions)
         assertFalse(viewModel.viewState.value.isSearching)
         assertEquals("Search failed", viewModel.viewState.value.searchError)
+    }
+
+    @Test
+    fun comic_vine_failure_uses_api_error_message() = runTest(dispatcher) {
+        val repository = FakeComicVineCharactersRepository()
+        val failedSearch = repository.enqueueFailure(
+            ComicVineException("Comic Vine API key is missing")
+        )
+        val viewModel = createViewModel(repository = repository)
+        runCurrent()
+
+        viewModel.onUiEvent(MainScreenUiEvent.OnSearchQueryChanged("spider"))
+        viewModel.onUiEvent(MainScreenUiEvent.OnSearchClick)
+        runCurrent()
+        failedSearch.complete(Unit)
+        runCurrent()
+
+        assertEquals(emptyList(), viewModel.viewState.value.suggestions)
+        assertFalse(viewModel.viewState.value.isSearching)
+        assertEquals(
+            "Comic Vine API key is missing",
+            viewModel.viewState.value.searchError,
+        )
     }
 
     private fun createViewModel(

@@ -4,6 +4,7 @@ import com.keyflare.common.utils.isDebugLike
 import com.keyflare.common.utils.mapState
 import com.keyflare.exchange.core.analytics.A
 import com.keyflare.exchange.core.comicvine.ComicVineCharacterSearchResult
+import com.keyflare.exchange.core.comicvine.ComicVineException
 import com.keyflare.exchange.core.navigationtools.ViewModel
 import com.keyflare.exchange.feature.converter.MainScreenArgs
 import com.keyflare.exchange.feature.converter.internal.MainScreenState
@@ -117,7 +118,7 @@ public class MainScreenViewModel internal constructor(
                     state.value.copy(
                         suggestions = emptyList(),
                         isSearching = false,
-                        searchError = SEARCH_ERROR_MESSAGE,
+                        searchError = it.toSearchErrorMessage(),
                     )
                 },
             )
@@ -138,6 +139,14 @@ public class MainScreenViewModel internal constructor(
             id = id,
             name = name,
         )
+    }
+
+    private fun Throwable.toSearchErrorMessage(): String {
+        return if (this is ComicVineException && !message.isNullOrBlank()) {
+            message.orEmpty()
+        } else {
+            SEARCH_ERROR_MESSAGE
+        }
     }
 
     private companion object {
